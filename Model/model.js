@@ -19,7 +19,7 @@ const MemberSchemaa = new mongoose.Schema({
 });
 
 const RequestSchema = new mongoose.Schema({
-  Id:String,
+  userName:String,
   Reason:String,
   Evidence: String,
   Payment: String, 
@@ -27,7 +27,7 @@ const RequestSchema = new mongoose.Schema({
   Edirr:String,
   
 
-});
+},{timestamps:true},);
 
 
 const MonthlyPayment = new mongoose.Schema({
@@ -43,7 +43,6 @@ const EdirrSchema = new mongoose.Schema(
     
       
         NameOfeDirr:String,    
-        eDirrType:String,
         Amount:String,
         PaymentDuration:String,
         PaymentDay:String,
@@ -53,6 +52,7 @@ const EdirrSchema = new mongoose.Schema(
         Members:[MemberSchemaa],
         Request:[RequestSchema],
         MonthlyPayment:[MonthlyPayment],
+        TotalAmount:String,
       },{timestamps:true},
 
 

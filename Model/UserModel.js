@@ -9,6 +9,16 @@ const Paymenthistory = new mongoose.Schema(
     
   },{timestamps:true},
 )
+const Granted = new mongoose.Schema(
+  {
+    text:String,
+    name:String,
+    edirr:String,
+    Amount:String,
+
+    
+  },{timestamps:true}
+)
 
 
 const NotificationScehma = new mongoose.Schema(
@@ -20,7 +30,7 @@ const NotificationScehma = new mongoose.Schema(
       Payment:String, 
       Date:String,
       
-    }
+    },{timestamps:true}
   )
   const UserDetailsScehma = new mongoose.Schema(
     {
@@ -34,7 +44,8 @@ const NotificationScehma = new mongoose.Schema(
       password: String,
       Notification:[NotificationScehma],
       role: String,
-      Paymenthistory:[Paymenthistory]
+      Paymenthistory:[Paymenthistory],
+      Granted:[Granted],
 
       
     },
