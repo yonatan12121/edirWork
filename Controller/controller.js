@@ -13,107 +13,107 @@ const { Job } = require('node-schedule');
 
 const JWT_SECRET = "nhjndshnbhsiduy78q3ye3yhrewhriewopfew[fpe-fpe-pf[df[s;f[ds;f[ds;f[ds;f[ds;,fld,s.mdnshbgvcarfdtwygyqgygdhsabjbcnvgawqrr6t8siahjdvdgvds()!@#$%^&*";
 
-exports.test=async() => {
+// exports.test=async() => {
  
-  var i;
-  const PaymentDay="11"
-  // Your code here
-  const now = new Date();
-  console.log("a",now);
-  const aa = String(now);
-  console.log("b",aa);
-  var bb = aa.split(" ", 4);
-  console.log("c",bb);
-  const curentpayment = bb[2];
-  console.log(curentpayment);
-  const Edir= await Edirs.find({CurrentPaymentDay:curentpayment});
-  // const users= await User.find();
-  // console.log(users);
-  // console.log(Edir[0].Members[0].Email)
-  var Store = []
-  Edir.forEach((eDir)=>{  
-    eDir.Members.forEach((members)=>{
-      Store = Store.concat( members.Email)
-    })
-  })
-  // console.log(Store);
+//   var i;
+//   const PaymentDay="11"
+//   // Your code here
+//   const now = new Date();
+//   console.log("a",now);
+//   const aa = String(now);
+//   console.log("b",aa);
+//   var bb = aa.split(" ", 4);
+//   console.log("c",bb);
+//   const curentpayment = bb[2];
+//   console.log(curentpayment);
+//   const Edir= await Edirs.find({CurrentPaymentDay:curentpayment});
+//   // const users= await User.find();
+//   // console.log(users);
+//   // console.log(Edir[0].Members[0].Email)
+//   var Store = []
+//   Edir.forEach((eDir)=>{  
+//     eDir.Members.forEach((members)=>{
+//       Store = Store.concat( members.Email)
+//     })
+//   })
+//   // console.log(Store);
 
-  Store.forEach(async (eDir) =>{
-    const paymentNotification =await Edirs.find({"Members.Email": eDir,"Members.Payment": "Not Payed",CurrentPaymentDay:curentpayment});
-    // console.log(paymentNotification);
-    paymentNotification.forEach((PN)=>{
-      console.log(PN.NameOfeDirr,now,PN.Amount)
-      User.updateOne({email:eDir},{$push:{Notification:[{text:"Your monthly payment is due ",edirr:PN.NameOfeDirr,type:"mPayment",Date:now,Payment:PN.Amount}]}},(err,doc)=>{
-        if (err) return console.log(err);
-        console.log("NOtified");
-        var next;
-        paymentNotification.forEach((PN)=>{
-          console.log(PN.PaymentDuration)
+//   Store.forEach(async (eDir) =>{
+//     const paymentNotification =await Edirs.find({"Members.Email": eDir,"Members.Payment": "Not Payed",CurrentPaymentDay:curentpayment});
+//     // console.log(paymentNotification);
+//     paymentNotification.forEach((PN)=>{
+//       console.log(PN.NameOfeDirr,now,PN.Amount)
+//       User.updateOne({email:eDir},{$push:{Notification:[{text:"Your monthly payment is due ",edirr:PN.NameOfeDirr,type:"mPayment",Date:now,Payment:PN.Amount}]}},(err,doc)=>{
+//         if (err) return console.log(err);
+//         console.log("NOtified");
+//         var next;
+//         paymentNotification.forEach((PN)=>{
+//           console.log(PN.PaymentDuration)
           
-          if(PN.PaymentDuration==30){
-            var newpayment =(parseInt(PN.CurrentPaymentDay) + 30)
+//           if(PN.PaymentDuration==30){
+//             var newpayment =(parseInt(PN.CurrentPaymentDay) + 30)
             
-            console.log(newpayment);
-            if (newpayment>30){
-             next = newpayment-30
-              console.log(next)
+//             console.log(newpayment);
+//             if (newpayment>30){
+//              next = newpayment-30
+//               console.log(next)
                
-            }
-            else{
-              next=newpayment;
-            }
-          }
-          else if(PN.PaymentDuration==7){
-            console.log("we in 7");
-            var newpayment =(parseInt(PN.CurrentPaymentDay) + 7)
+//             }
+//             else{
+//               next=newpayment;
+//             }
+//           }
+//           else if(PN.PaymentDuration==7){
+//             console.log("we in 7");
+//             var newpayment =(parseInt(PN.CurrentPaymentDay) + 7)
     
-            console.log(newpayment);
-            if (newpayment>30){
-              next = newpayment-30
-              console.log(next)
+//             console.log(newpayment);
+//             if (newpayment>30){
+//               next = newpayment-30
+//               console.log(next)
                
-            }
-            else{
-              next=newpayment;
-            }
-          }else if(PN.PaymentDuration==14){
-            var newpayment =(parseInt(PN.CurrentPaymentDay) + 14)
+//             }
+//             else{
+//               next=newpayment;
+//             }
+//           }else if(PN.PaymentDuration==14){
+//             var newpayment =(parseInt(PN.CurrentPaymentDay) + 14)
     
-            console.log(newpayment);
-            if (newpayment>30){
-               next = newpayment-30
-              console.log(next)
+//             console.log(newpayment);
+//             if (newpayment>30){
+//                next = newpayment-30
+//               console.log(next)
                
-            }
-            else{
-              next=newpayment;
-            }
-          }else if(PN.PaymentDuration==21){
-            var newpayment =(parseInt(PN.CurrentPaymentDay) + 21)
+//             }
+//             else{
+//               next=newpayment;
+//             }
+//           }else if(PN.PaymentDuration==21){
+//             var newpayment =(parseInt(PN.CurrentPaymentDay) + 21)
     
-            console.log(newpayment);
-            if (newpayment>30){
-               next = newpayment-30
-              console.log(next)
+//             console.log(newpayment);
+//             if (newpayment>30){
+//                next = newpayment-30
+//               console.log(next)
                
-            }
-            else{
-              next=newpayment;
-            }
-          }
-          console.log(next);
-             Edirs.updateOne( { NameOfeDirr: PN.NameOfeDirr },{ $set: { CurrentPaymentDay: next }},(err,doc)=>{
-              if (err) return console.log(err);
-              console.log("current payemnt updated ");
-            });
+//             }
+//             else{
+//               next=newpayment;
+//             }
+//           }
+//           console.log(next);
+//              Edirs.updateOne( { NameOfeDirr: PN.NameOfeDirr },{ $set: { CurrentPaymentDay: next }},(err,doc)=>{
+//               if (err) return console.log(err);
+//               console.log("current payemnt updated ");
+//             });
          
-        })
+//         })
       
-      });
-    })
-  })
-// 
-}
+//       });
+//     })
+//   })
+// // 
+// }
 
 exports.runOnceADay=async() => {
  
