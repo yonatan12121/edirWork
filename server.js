@@ -11,7 +11,7 @@ app.use(bodyparser.urlencoded({ extended : true}))
 const connectDB = require('./database/connection');
 const schedule = require('node-schedule');
 const { runOnceADay,test } = require('./Controller/controller');
-   test();
+  //  test();
 
   schedule.scheduleJob ('41 14 * * *'   ,runOnceADay
 
