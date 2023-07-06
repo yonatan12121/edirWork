@@ -47,6 +47,7 @@ const EdirrSchema = new mongoose.Schema(
         PaymentDuration:String,
         PaymentDay:String,
         Description:String,
+        CurentPaymentDay:String,
         Creator:String,
         Member:[MemberSchema],
         Members:[MemberSchemaa],

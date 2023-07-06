@@ -42,6 +42,8 @@ const NotificationScehma = new mongoose.Schema(
       email: { type: String,
         unique: true},
       password: String,
+      Gender: String,
+      Department:String,
       Notification:[NotificationScehma],
       role: String,
       Paymenthistory:[Paymenthistory],
