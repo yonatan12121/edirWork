@@ -6,8 +6,7 @@ const mongoose= require("mongoose");
 const MemberSchema = new mongoose.Schema({
 
   Id:String,
-  userName:{ type: String,
-    unique: true}, 
+  userName:{ type: String, unique: false }, 
 });
 
 

@@ -221,15 +221,17 @@ exports.loginUser = async (req, res) => {
       const token = jwt.sign({ email: user.userName }, JWT_SECRET, {
         expiresIn: "15m",
       });
+      const _id = user._id;
       const role = user.role;
       const fullName = user.fullName;
       const userName = user.userName;
       const email = user.email;
       const Gender = user.Gender;
       const Department = user.Department
+    
 
       if (res.status(201)) {
-        if (role === "user" || role === "creator") {
+        if (role === "user" || role === "Creator") {
           return res.json({
             status: "ok",
             _id,
@@ -256,18 +258,14 @@ exports.loginUser = async (req, res) => {
   }
 };
 exports.CreateEdir = async (req, res) => {
-  const { NameOfeDirr,
-    Amount,
-    PaymentDuration,
-    PaymentDay,
-    Description,
-    Creator } = req.body;
-  // var NameOfeDirr = data.NameOfeDirr
-  // var Amount =data.Amount
-  // var PaymentDuration =data.PaymentDuration
-  // var PaymentDay =data.PaymentDay
-  // var Description =data.Description
-  // var Creator =data.Creator
+  const { data } = req.body;
+  console.log(data);
+  var NameOfeDirr = data.edirrName
+  var Amount =data.amount
+  var PaymentDuration =data.paymentEvery
+  var PaymentDay =data.paymentDay
+  var Description =data.description
+  var Creator =data.Creator
 
   try {
     await Edirs.create({
