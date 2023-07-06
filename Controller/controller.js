@@ -16,11 +16,12 @@ const JWT_SECRET = "nhjndshnbhsiduy78q3ye3yhrewhriewopfew[fpe-fpe-pf[df[s;f[ds;f
 exports.test = async () => {
 
   //7/2/2023
-  const date = new Date();
-  const month = date.getMonth() + 1; // Add 1 to get the month in the 1-12 range
-  const day = date.getDate();
+  const date = new Date(); // Create a new Date object with the current date and time
+
+  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Convert to string and pad with 0 if needed
+  const day = date.getDate().toString().padStart(2, '0'); // Convert to string and pad with 0 if needed
   const year = date.getFullYear();
-  const formattedDate = `${month}/${day}/${year}`;
+  const formattedDate = `${year}-${month}-${day}`;
   console.log(formattedDate);
 
   const Edir = await Edirs.find({ PaymentDay: formattedDate });
@@ -342,6 +343,8 @@ exports.Join = async (req, res) => {
     res.json({ status: "error", error: error.message });
   }
 };
+
+
 exports.Accept1 = async (req, res) => {
   const { data } = req.body;
   var userName = data.userName;
@@ -371,6 +374,23 @@ exports.Accept1 = async (req, res) => {
     res.json(doc)
   });
 }
+
+exports.payment = async (req, res) => {
+  const { email, Amount, edirrName } = req.body;
+  console.log(Amount + email+edirrName);
+    if (error) throw new Error(error);
+    Edirs.updateOne({ "NameOfeDirr": edirrName }, { $set: { "Members.$[].Payment": "Payed" } }, (err, doc) => {
+
+      console.log("chapa said" + response.body);
+      const respBody = JSON.parse(response.body);
+
+      return res.json({ url: respBody.data.checkout_url });
+   
+    })
+ 
+
+}
+
 exports.LeaveEdirr = async (req, res) => {
   const { data } = req.body;
   var id = data.id;
