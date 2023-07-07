@@ -327,8 +327,8 @@ exports.Join = async (req, res) => {
     }
 
     const updateUser = await User.updateOne(
-      { email: Creator },
-      { $push: { Notification: [{ text: userName + " wants to join your edirr", name: userName, edirr: NameOfeDirr }] } }
+      { userName: Creator },
+      { $push: { Notification: [{ text: userName + " wants to join your edirr", name: userName,type :"join", edirr: NameOfeDirr }] } }
     ).exec();
 
     if (!updateUser) {
@@ -381,8 +381,6 @@ exports.payment = async (req, res) => {
     if (error) throw new Error(error);
     Edirs.updateOne({ "NameOfeDirr": edirrName }, { $set: { "Members.$[].Payment": "Payed" } }, (err, doc) => {
 
-      console.log("chapa said" + response.body);
-      const respBody = JSON.parse(response.body);
 
       return res.json({ url: respBody.data.checkout_url });
    
