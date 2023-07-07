@@ -44,44 +44,45 @@ const paymentDetailSchema = new mongoose.Schema({
 
 const EdirrSchema = new mongoose.Schema(
   {    
-    
-      
-        NameOfeDirr:String,    
-        Amount:String,
-        PaymentDuration:String,
-        PaymentDay:String,
-        Description:String,
-        CurentPaymentDay:String,
-        Creator:String,
-        Member:[MemberSchema],
-        Members:[MemberSchemaa],
-        Request:[RequestSchema],
-        MonthlyPayment: {
-          January: [paymentDetailSchema],
-          February: [paymentDetailSchema],
-          March: [paymentDetailSchema],
-          April: [paymentDetailSchema],
-          May: [paymentDetailSchema],
-          June: [paymentDetailSchema],
-          July: [paymentDetailSchema],
-          August: [paymentDetailSchema],
-          September: [paymentDetailSchema],
-          October: [paymentDetailSchema],
-          November: [paymentDetailSchema],
-          December: [paymentDetailSchema]
-        },
-        TotalAmount:String,
-        PaymentSofar:String
-      },{timestamps:true},
-
-
-  
+    NameOfeDirr: String,    
+    Amount: String,
+    PaymentDuration: String,
+    PaymentDay: String,
+    Description: String,
+    CurentPaymentDay: String,
+    Creator: String,
+    Member: [MemberSchema],
+    Members: [MemberSchemaa],
+    Request: [RequestSchema],
+    MonthlyPayment: {
+      January: [paymentDetailSchema],
+      February: [paymentDetailSchema],
+      March: [paymentDetailSchema],
+      April: [paymentDetailSchema],
+      May: [paymentDetailSchema],
+      June: [paymentDetailSchema],
+      July: [paymentDetailSchema],
+      August: [paymentDetailSchema],
+      September: [paymentDetailSchema],
+      October: [paymentDetailSchema],
+      November: [paymentDetailSchema],
+      December: [paymentDetailSchema]
+    },
+    TotalAmount: {
+      type: String,
+      default: "0"
+    },
+    PaymentSofar: {
+      type: String,
+      default: "0"
+    }
+  },
+  { timestamps: true },
   {
-      collection: "Edirs",
-
+    collection: "Edirs"
   }
-
 );
+
 
 const Edirs =mongoose.model("Edirs", EdirrSchema);
 

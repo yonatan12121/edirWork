@@ -353,7 +353,7 @@ exports.Join = async (req, res) => {
 exports.Accept1 = async (req, res) => {
   const { data } = req.body;
   const userName = data.userName;
-  const edirr = data.edirr;
+  const edirr = data.NameOfEdirr;
   const Creator = data.Creator;
   const Notification_id = data._id;
   console.log("accept111");
@@ -389,6 +389,7 @@ exports.Accept1 = async (req, res) => {
               {
                 text: "You have joined the edir. Please pay your payment on the payment day.",
                 edirr: edirr,
+                Payment:Amount,
                 type: "normal"
               }
             ]
@@ -424,7 +425,7 @@ exports.Accept1 = async (req, res) => {
 
         await User.updateOne(
           { userName: Creator },
-          { $pull: { Notification: { name: userName } } }
+          { $pull: { Notification: { _id: Notification_id } } }
         );
       }
     }
