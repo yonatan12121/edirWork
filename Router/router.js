@@ -22,6 +22,8 @@ route.post('/Accept1', controller.Accept1);
 route.post('/AcceptService', controller.AcceptService);
 route.post('/checkpayment', controller.checkpayment);
 route.post('/Getmemb', controller.Getmemb);
+route.post('/rejectUser', controller.rejectUser);
+
 
 //user
 route.post('/profile', controller.profile);
@@ -34,5 +36,6 @@ route.post('/payment', controller.payment);
 //admin
 route.post('/checkmonthpayment', controller.checkmonthpayment);
 route.get('/Getuser', controller.Getuser);
+route.get('/removeUser', controller.removeUser);
 
 module.exports = route

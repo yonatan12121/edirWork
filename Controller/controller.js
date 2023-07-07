@@ -762,4 +762,60 @@ exports.checkpayment = async (req, res) => {
 
 }
 
+exports.rejectUser = async (req, res) => {
+  const { data } = req.body;
+  var Notification_id = data.id;
+  var userName = data.Creator;
+  var NameOfEdirr = data.edirr;
+  // var 
+  console.log(id);
+  console.log(userName);
 
+  try {
+   const notif= await User.updateOne(
+      { userName: Creator },
+      { $pull: { Notification: { _id: Notification_id } } }
+    );
+    if (!notif) {
+      throw new Error("noification not found");
+    }
+
+    console.log("notification removed");
+    const updatedEdirs = await Edirs.findOneAndUpdate(
+      { NameOfEdirr: NameOfEdirr },
+      { $pull: { Member: { userName: userName } } },
+      { new: true }
+    ).exec();
+
+    if (!updatedEdirs) {
+      throw new Error("Member not found in Edirr");
+    }
+
+    console.log("Member removed from Edirr");
+    res.status(200).send({ status: "ok" });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ status: "error", error: error.message });
+  }
+};
+
+exports.removeUser = async (req, res) => {
+  const { data } = req.body;
+  var id = data._id;
+  console.log(data);
+  try {
+    // Find the user by ID and remove them
+    const result = await User.findByIdAndRemove(id);
+
+    if (result) {
+      console.log("User removed successfully:", result);
+      res.status(200).send(result);
+    } else {
+      console.log("User not found");
+    }
+  } catch (error) {
+    console.error("Error removing user:", error);
+    res.status(500).send(error);
+  }
+};
