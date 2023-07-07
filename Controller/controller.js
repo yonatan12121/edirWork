@@ -348,7 +348,7 @@ exports.Join = async (req, res) => {
 exports.Accept1 = async (req, res) => {
   const { data } = req.body;
   var userName = data.userName;
-  var edirr = data.edirr;
+  var edirr = data.NameOfEdirr;
   var Creator = data.Creator;
 
   console.log("acccept111");
