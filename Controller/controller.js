@@ -355,7 +355,7 @@ exports.Accept1 = async (req, res) => {
   console.log(Creator);
   const paymentNotification = await Edirs.find({ "Members.userName": userName });
 
-  Edirs.updateOne({ NameOfeDirr: edirr }, { $push: { Members: { userName: userName, Payment: "Not Payed" } } }, (err, doc) => {
+  Edirs.updateOne({ NameOfeDirr: edirr }, { $push: { Members: { userName: userName } } }, (err, doc) => {
     if (err) return console.log(err);
     paymentNotification.forEach((PN) => {
       console.log("payment notification", PN.NameOfeDirr, PN.Amount);
