@@ -29,13 +29,18 @@ const RequestSchema = new mongoose.Schema({
 },{timestamps:true},);
 
 
-const MonthlyPayment = new mongoose.Schema({
+const paymentDetailSchema = new mongoose.Schema({
   Id:String,
   Date:String,
+  userName:String,
   Amount:String,
   
 
 });
+
+
+
+
 
 const EdirrSchema = new mongoose.Schema(
   {    
@@ -51,7 +56,20 @@ const EdirrSchema = new mongoose.Schema(
         Member:[MemberSchema],
         Members:[MemberSchemaa],
         Request:[RequestSchema],
-        MonthlyPayment:[MonthlyPayment],
+        MonthlyPayment: {
+          January: [paymentDetailSchema],
+          February: [paymentDetailSchema],
+          March: [paymentDetailSchema],
+          April: [paymentDetailSchema],
+          May: [paymentDetailSchema],
+          June: [paymentDetailSchema],
+          July: [paymentDetailSchema],
+          August: [paymentDetailSchema],
+          September: [paymentDetailSchema],
+          October: [paymentDetailSchema],
+          November: [paymentDetailSchema],
+          December: [paymentDetailSchema]
+        },
         TotalAmount:String,
       },{timestamps:true},
 

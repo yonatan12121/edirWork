@@ -376,35 +376,37 @@ exports.Accept1 = async (req, res) => {
 }
 
 exports.payment = async (req, res) => {
-  
-const date = new Date(); // Create a new Date object with the current date and time
-const monthNames = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December'
-];
-const monthIndex = date.getMonth(); // Get the month as a numeric value (0-11)
-const monthName = monthNames[monthIndex]; // Get the corresponding month name
+  const date = new Date();
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  const currentMonthIndex = date.getMonth();
+  const currentMonthName = monthNames[currentMonthIndex];
 
-// console.log(monthName);
+  const { data } = req.body;
+  const { Amount, edirrName, userName } = data;
+
+  try {
+    const updatedEdirr = await Edirs.findOneAndUpdate(
+      { NameOfeDirr: edirrName, [`MonthlyPayment.${currentMonthName}`]: { $exists: true } },
+      { $push: { [`MonthlyPayment.${currentMonthName}`]: { userName, Amount, Date: date } } },
+      { new: true }
+    );
+
+    if (!updatedEdirr) {
+      return res.json({ status: 'error', error: 'Edirr or matching month not found' });
+    }
+
+    console.log('Payment recorded successfully');
+    return res.json({ status: 'ok' });
+  } catch (error) {
+    console.error(error);
+    return res.json({ status: 'error', error: error.message });
+  }
+};
 
 
-  const{data} =req.body;
-   Amount  = data.Amount;
-   edirrName  = data.edirrName;
-   userName = data.userName;
-  // var month =data.month;
-
-  console.log(Amount + userName +edirrName);
-  
-    User.updateOne({ userName: userName }, { $push:{Paymenthistory: [{ Amount: Amount,edirr:edirrName,Date:date,Month:monthName }] } }, (err, doc) => {
-      if (err) return console.log(err);
-      res.json(doc)
-
-   
-    })
- 
-
-}
 
 exports.LeaveEdirr = async (req, res) => {
   const { data } = req.body;
