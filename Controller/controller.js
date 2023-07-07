@@ -819,3 +819,58 @@ exports.removeUser = async (req, res) => {
     res.status(500).send(error);
   }
 };
+
+exports.ResetPassword = async (req, res) => {
+  const { newPassword, userName } = req.body;
+  console.log(newPassword, email);
+  // Edirs.updateOne({ "NameOfeDirr": edirrName }, { $set: { "Members.$[].Payment": "Payed" } }, (err, doc) => {
+  const encreptedPassword = await bcrypt.hash(newPassword, 10);
+  User.updateOne(
+    { userName: userName },
+    { $set: { password: encreptedPassword } },
+    (err, doc) => {
+      if (err) return console.log(err);
+      return res.json({ doc });
+    }
+  );
+  // $elemMatch: { "Creator": email }
+};
+exports.UpdateAccount = async (req, res) => {
+  const { data } = req.body;
+  console.log(data);
+  var _id = data.data._id;
+ 
+  var fullName = data.data.FullName;
+  var userName = data.data.userName;
+  var email = data.data.email;
+  var phoneNumber = data.data.phoneNumber;
+
+  var department = data.data.department;
+
+  console.log("update", data.data.FullName,
+    email,
+    gender,
+    phoneNumber,
+    role,
+    department);
+
+  User.findOneAndUpdate(
+    { _id: _id },
+    {
+      $set: {
+        fullName: fullName,
+        email: email,
+        gender: gender,
+        phoneNumber: phoneNumber,
+        role: role,
+        department: department
+      }
+    },
+    { new: true },
+    (err, doc) => {
+      if (err) return console.log(err);
+      return res.json({ doc });
+    }
+  );
+
+};
