@@ -448,7 +448,7 @@ exports.payment = async (req, res) => {
   const currentMonthName = monthNames[currentMonthIndex];
 
   const { data } = req.body;
-  const { Amount, edirrName, userName } = data;
+  const { Amount, NameOfEdirr, userName } = data;
 
   try {
 
@@ -458,7 +458,7 @@ exports.payment = async (req, res) => {
         $push: {
           Paymenthistory: {
             Amount: Amount,
-            edirr: edirrName,
+            edirr: NameOfEdirr,
             Date: date,
             Month: currentMonthName
           }
@@ -467,7 +467,7 @@ exports.payment = async (req, res) => {
     );
 
     const updatedEdirr = await Edirs.findOneAndUpdate(
-      { NameOfeDirr: edirrName, [`MonthlyPayment.${currentMonthName}`]: { $exists: true } },
+      { NameOfeDirr: NameOfEdirr, [`MonthlyPayment.${currentMonthName}`]: { $exists: true } },
       { $push: { [`MonthlyPayment.${currentMonthName}`]: { userName, Amount, Date: date } } },
       { new: true }
     );
@@ -475,7 +475,7 @@ exports.payment = async (req, res) => {
     if (!updatedEdirr) {
       return res.json({ status: 'error', error: 'Edirr or matching month not found' });
     }
-    const data = await Edirs.findOne({ NameOfeDirr: edirrName }, 'TotalAmount');
+    const data = await Edirs.findOne({ NameOfeDirr: NameOfEdirr }, 'TotalAmount');
 
                 if (!data) {
                   throw new Error("Edirr not found");
@@ -485,7 +485,7 @@ exports.payment = async (req, res) => {
                 var TotalAmount = parseInt(data.TotalAmount);
                 var newAmount = TotalAmount + amountn;
                 console.log(data);
-                Edirs.updateMany({ NameOfeDirr: edirrName }, { $set: { TotalAmount: newAmount } }, (err, doc) => {
+                Edirs.updateMany({ NameOfeDirr: NameOfEdirr }, { $set: { TotalAmount: newAmount } }, (err, doc) => {
                   if (err) return console.log(err);
                   console.log(doc);
                   // res.json(doc)
