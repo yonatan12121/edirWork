@@ -71,6 +71,7 @@ const EdirrSchema = new mongoose.Schema(
           December: [paymentDetailSchema]
         },
         TotalAmount:String,
+        PaymentSofar:String
       },{timestamps:true},
 
 
