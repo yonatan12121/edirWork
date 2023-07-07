@@ -28,6 +28,8 @@ route.post('/profile', controller.profile);
 route.post('/Join', controller.Join);
 route.post('/RequestService', controller.RequestService);
 route.post('/LeaveEdirr', controller.LeaveEdirr);
+route.post('/payment', controller.payment);
+
 
 //admin
 route.post('/checkmonthpayment', controller.checkmonthpayment);

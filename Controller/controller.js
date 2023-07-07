@@ -376,13 +376,30 @@ exports.Accept1 = async (req, res) => {
 }
 
 exports.payment = async (req, res) => {
-  const { email, Amount, edirrName } = req.body;
-  console.log(Amount + email+edirrName);
-    if (error) throw new Error(error);
-    Edirs.updateOne({ "NameOfeDirr": edirrName }, { $set: { "Members.$[].Payment": "Payed" } }, (err, doc) => {
+  
+const date = new Date(); // Create a new Date object with the current date and time
+const monthNames = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
+const monthIndex = date.getMonth(); // Get the month as a numeric value (0-11)
+const monthName = monthNames[monthIndex]; // Get the corresponding month name
+
+// console.log(monthName);
 
 
-      return res.json({ url: respBody.data.checkout_url });
+  const{data} =req.body;
+   Amount  = data.Amount;
+   edirrName  = data.edirrName;
+   userName = data.userName;
+  // var month =data.month;
+
+  console.log(Amount + userName +edirrName);
+  
+    User.updateOne({ userName: userName }, { $push:{Paymenthistory: [{ Amount: Amount,edirr:edirrName,Date:date,Month:monthName }] } }, (err, doc) => {
+      if (err) return console.log(err);
+      res.json(doc)
+
    
     })
  
