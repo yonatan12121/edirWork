@@ -16,11 +16,12 @@ const JWT_SECRET = "nhjndshnbhsiduy78q3ye3yhrewhriewopfew[fpe-fpe-pf[df[s;f[ds;f
 exports.test = async () => {
 
   //7/2/2023
-  const date = new Date();
-  const month = date.getMonth() + 1; // Add 1 to get the month in the 1-12 range
-  const day = date.getDate();
+  const date = new Date(); // Create a new Date object with the current date and time
+
+  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Convert to string and pad with 0 if needed
+  const day = date.getDate().toString().padStart(2, '0'); // Convert to string and pad with 0 if needed
   const year = date.getFullYear();
-  const formattedDate = `${month}/${day}/${year}`;
+  const formattedDate = `${year}-${month}-${day}`;
   console.log(formattedDate);
 
   const Edir = await Edirs.find({ PaymentDay: formattedDate });
@@ -327,7 +328,7 @@ exports.Join = async (req, res) => {
 
     const updateUser = await User.updateOne(
       { userName: Creator },
-      { $push: { Notification: [{ text: userName + " wants to join your edirr", name: userName, edirr: NameOfeDirr }] } }
+      { $push: { Notification: [{ text: userName + " wants to join your edirr", name: userName,type :"join", edirr: NameOfeDirr }] } }
     ).exec();
 
     if (!updateUser) {
@@ -342,6 +343,8 @@ exports.Join = async (req, res) => {
     res.json({ status: "error", error: error.message });
   }
 };
+
+
 exports.Accept1 = async (req, res) => {
   const { data } = req.body;
   var userName = data.userName;
@@ -352,7 +355,7 @@ exports.Accept1 = async (req, res) => {
   console.log(Creator);
   const paymentNotification = await Edirs.find({ "Members.userName": userName });
 
-  Edirs.updateOne({ NameOfeDirr: edirr }, { $push: { Members: { userName: userName, Payment: "Not Payed" } } }, (err, doc) => {
+  Edirs.updateOne({ NameOfeDirr: edirr }, { $push: { Members: { userName: userName } } }, (err, doc) => {
     if (err) return console.log(err);
     paymentNotification.forEach((PN) => {
       console.log("payment notification", PN.NameOfeDirr, PN.Amount);
@@ -371,6 +374,38 @@ exports.Accept1 = async (req, res) => {
     res.json(doc)
   });
 }
+
+exports.payment = async (req, res) => {
+  
+const date = new Date(); // Create a new Date object with the current date and time
+const monthNames = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
+const monthIndex = date.getMonth(); // Get the month as a numeric value (0-11)
+const monthName = monthNames[monthIndex]; // Get the corresponding month name
+
+// console.log(monthName);
+
+
+  const{data} =req.body;
+   Amount  = data.Amount;
+   edirrName  = data.edirrName;
+   userName = data.userName;
+  // var month =data.month;
+
+  console.log(Amount + userName +edirrName);
+  
+    User.updateOne({ userName: userName }, { $push:{Paymenthistory: [{ Amount: Amount,edirr:edirrName,Date:date,Month:monthName }] } }, (err, doc) => {
+      if (err) return console.log(err);
+      res.json(doc)
+
+   
+    })
+ 
+
+}
+
 exports.LeaveEdirr = async (req, res) => {
   const { data } = req.body;
   var id = data.id;

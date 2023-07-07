@@ -6,6 +6,7 @@ const Paymenthistory = new mongoose.Schema(
     Amount:String,
     edirr:String,
     Date:String,
+    Month:String,
     
   },{timestamps:true},
 )
