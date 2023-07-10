@@ -875,8 +875,8 @@ exports.rejectUser = async (req, res) => {
   var Creator = data.Creator;
 
   // var
-  console.log(id);
-  console.log(userName);
+  // console.log(id);
+  // console.log(userName);
 
   try {
     await User.updateOne(
