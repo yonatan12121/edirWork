@@ -23,6 +23,8 @@ route.post('/AcceptService', controller.AcceptService);
 route.post('/checkpayment', controller.checkpayment);
 route.post('/Getmemb', controller.Getmemb);
 route.post('/rejectUser', controller.rejectUser);
+route.post('/Alert', controller.Alert);
+
 
 
 //user

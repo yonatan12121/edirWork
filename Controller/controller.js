@@ -847,11 +847,10 @@ exports.UpdateAccount = async (req, res) => {
 
   var department = data.data.department;
 
-  console.log("update", data.data.FullName,
+  console.log("update", 
+  fullName,
     email,
-    gender,
     phoneNumber,
-    role,
     department);
 
   User.findOneAndUpdate(
@@ -860,9 +859,7 @@ exports.UpdateAccount = async (req, res) => {
       $set: {
         fullName: fullName,
         email: email,
-        gender: gender,
         phoneNumber: phoneNumber,
-        role: role,
         department: department
       }
     },
@@ -873,4 +870,34 @@ exports.UpdateAccount = async (req, res) => {
     }
   );
 
+};
+
+exports.Alert = async (req, res) => {
+  try {
+    const { data } = req.body;
+    const { userName, amount, NameOfeDirr } = data;
+
+    await User.updateOne(
+      { userName: userName },
+      {
+        $push: {
+          Notification: [
+            {
+              text: "Your monthly payment is due",
+              edirr: NameOfeDirr,
+              type: "mPayment",
+              Date: formattedDate,
+              Payment: amount
+            }
+          ]
+        }
+      }
+    );
+
+    console.log("Notified");
+    res.json({ status: "ok" });
+  } catch (error) {
+    console.error(error);
+    res.json({ status: "error", error: error.message });
+  }
 };
