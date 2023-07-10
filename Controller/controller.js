@@ -689,6 +689,8 @@ exports.AcceptService = async (req, res) => {
   var Reason = data.Reason;
   var Amount = data.Amount;
   var Edirr = data.Edirr;
+  var _id = data._id;
+  var Creator = data.Creator;
   try {
     Edirs.updateOne(
       { "NameOfeDirr": Edirr, "Request.$[].userName": userName },
@@ -700,11 +702,21 @@ exports.AcceptService = async (req, res) => {
         User.updateOne(
           { userName: userName },
           { $push: { Notification: [{ text: "Your request has been accepted for the reason " + Reason, Payment: Amount }] } },
-          (err, doc) => {
+          async (err, doc) => {
             if (err) {
               throw new Error(err);
             }
+
+            
+
             console.log("Notified");
+
+            await User.updateOne(
+        
+              { userName: Creator },
+              { $pull: { Notification: { _id: _id } } }
+            );
+
             User.updateOne(
               { userName: userName },
               { $push: { Granted: [{ text: "The edirr crator have funded you with this amount money" + Amount + "For the folowing reason  " + Reason, Amount: Amount, edirr: Edirr }] } },
