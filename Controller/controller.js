@@ -495,7 +495,7 @@ exports.payment = async (req, res) => {
   const currentMonthName = monthNames[currentMonthIndex];
 
   const { data } = req.body;
-  const { Amount, NameOfEdirr, userName } = data;
+  const { Amount, NameOfEdirr, userName ,Notification_id} = data;
 
   try {
     await User.updateOne(
@@ -560,7 +560,16 @@ exports.payment = async (req, res) => {
     console.log("total Payment added ");
 
     console.log("Payment recorded successfully");
+
+    await User.updateOne(
+      { userName: userName },
+      { $pull: { Notification: { _id: Notification_id } } }
+    );
+
+
     return res.json({ status: "ok" });
+
+    
   } catch (error) {
     console.error(error);
     return res.json({ status: "error", error: error.message });
