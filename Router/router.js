@@ -33,6 +33,7 @@ route.post('/Join', controller.Join);
 route.post('/RequestService', controller.RequestService);
 route.post('/LeaveEdirr', controller.LeaveEdirr);
 route.post('/payment', controller.payment);
+route.post('/RejectService', controller.RejectService);
 
 
 //admin

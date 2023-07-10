@@ -909,3 +909,47 @@ console.log(Edir);
     res.json({ status: "error", error: error.message });
   }
 };
+
+exports.RejectService = async (req, res) => {
+  try {
+    const { data } = req.body;
+    // console.log(data);
+    const { userName, NameOfeDirr,Creator,Notification_id } = data;
+
+  const Edir = await Edirs.findById({ _id: NameOfeDirr });
+  var NameOfEdirr = Edir.NameOfeDirr;
+  var amount = Edir.Amount;
+console.log(Edir);
+  console.log("the name ",NameOfEdirr);
+    console.log("the amount ",amount);
+
+
+    await User.updateOne(
+      { userName: userName },
+      {
+        $push: {
+          Notification: [
+            {
+              text: "Your Service request have been denied",
+              edirr: NameOfEdirr,
+              type: "normal",
+              name:Creator,
+            }
+          ]
+        }
+      }
+    );
+
+    console.log("Notified");
+
+    await User.updateOne(
+        
+      { userName: Creator },
+      { $pull: { Notification: { _id: Notification_id } } }
+    );
+    res.json({ status: "ok" });
+  } catch (error) {
+    console.error(error);
+    res.json({ status: "error", error: error.message });
+  }
+};
