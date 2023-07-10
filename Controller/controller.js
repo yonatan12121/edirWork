@@ -1,63 +1,84 @@
-const express = require('express');
+const express = require("express");
 const app = express();
 app.use(express.json());
-const chapa = require('chapa-nodejs');
+const chapa = require("chapa-nodejs");
 const bcrypt = require("bcryptjs");
 const cors = require("cors");
 app.use(cors());
-var User = require('../Model/UserModel');
-var Admin = require('../Model/AdminModel');
-var Edirs = require('../model/model');
+var User = require("../Model/UserModel");
+var Admin = require("../Model/AdminModel");
+var Edirs = require("../model/model");
 const jwt = require("jsonwebtoken");
-const { Job } = require('node-schedule');
+const { Job } = require("node-schedule");
 
-const JWT_SECRET = "nhjndshnbhsiduy78q3ye3yhrewhriewopfew[fpe-fpe-pf[df[s;f[ds;f[ds;f[ds;f[ds;,fld,s.mdnshbgvcarfdtwygyqgygdhsabjbcnvgawqrr6t8siahjdvdgvds()!@#$%^&*";
+const JWT_SECRET =
+  "nhjndshnbhsiduy78q3ye3yhrewhriewopfew[fpe-fpe-pf[df[s;f[ds;f[ds;f[ds;f[ds;,fld,s.mdnshbgvcarfdtwygyqgygdhsabjbcnvgawqrr6t8siahjdvdgvds()!@#$%^&*";
 
 exports.test = async () => {
-
   //7/2/2023
   const date = new Date(); // Create a new Date object with the current date and time
 
-  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Convert to string and pad with 0 if needed
-  const day = date.getDate().toString().padStart(2, '0'); // Convert to string and pad with 0 if needed
+  const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Convert to string and pad with 0 if needed
+  const day = date.getDate().toString().padStart(2, "0"); // Convert to string and pad with 0 if needed
   const year = date.getFullYear();
   const formattedDate = `${year}-${month}-${day}`;
   console.log(formattedDate);
-  var paymentsofar=0;
+  var paymentsofar = 0;
   const Edir = await Edirs.find({ PaymentDay: formattedDate });
- console.log(Edir,"the edirr are");
-  var Store = []
+  console.log(Edir, "the edirr are");
+  var Store = [];
   Edir.forEach((eDir) => {
     eDir.Members.forEach((members) => {
-      Store = Store.concat(members.userName)
-    })
-  })
+      Store = Store.concat(members.userName);
+    });
+  });
   // console.log(Store);
 
   Store.forEach(async (userName) => {
-    const paymentNotification = await Edirs.find({ "Members.userName": userName, PaymentDay: formattedDate });
+    const paymentNotification = await Edirs.find({
+      "Members.userName": userName,
+      PaymentDay: formattedDate,
+    });
     // console.log(paymentNotification);
     paymentNotification.forEach((PN) => {
-      console.log(PN.NameOfeDirr,  PN.Amount)
-      User.updateOne({ userName: userName }, { $push: { Notification: [{ text: "Your monthly payment is due ", edirr: PN.NameOfeDirr, type: "mPayment", Date: formattedDate, Payment: PN.Amount }] } }, (err, doc) => {
-        if (err) return console.log(err);
-        console.log("NOtified");
-        paymentsofar++;
-      Edirs.updateMany({ NameOfeDirr: PN.NameOfeDirr}, { $set: { PaymentSofar: paymentsofar } }, (err, doc) => {
-        if (err) return console.log(err);
-        res.json(doc)
-      });
-
-      });
-    })
-  })
-  // 
-}
+      console.log(PN.NameOfeDirr, PN.Amount);
+      User.updateOne(
+        { userName: userName },
+        {
+          $push: {
+            Notification: [
+              {
+                text: "Your monthly payment is due ",
+                edirr: PN.NameOfeDirr,
+                type: "mPayment",
+                Date: formattedDate,
+                Payment: PN.Amount,
+              },
+            ],
+          },
+        },
+        (err, doc) => {
+          if (err) return console.log(err);
+          console.log("NOtified");
+          paymentsofar++;
+          Edirs.updateMany(
+            { NameOfeDirr: PN.NameOfeDirr },
+            { $set: { PaymentSofar: paymentsofar } },
+            (err, doc) => {
+              if (err) return console.log(err);
+              res.json(doc);
+            }
+          );
+        }
+      );
+    });
+  });
+  //
+};
 
 exports.runOnceADay = async () => {
-
   var i;
-  const PaymentDay = "11"
+  const PaymentDay = "11";
   // Your code here
   const now = new Date();
   const aa = String(now);
@@ -68,90 +89,103 @@ exports.runOnceADay = async () => {
   // const users= await User.find();
   // console.log(users);
   // console.log(Edir[0].Members[0].Email)
-  var Store = []
+  var Store = [];
   Edir.forEach((eDir) => {
     eDir.Members.forEach((members) => {
-      Store = Store.concat(members.Email)
-    })
-  })
+      Store = Store.concat(members.Email);
+    });
+  });
   // console.log(Store);
 
   Store.forEach(async (eDir) => {
-    const paymentNotification = await Edirs.find({ "Members.Email": eDir, "Members.Payment": "Not Payed", CurrentPaymentDay: curentpayment });
+    const paymentNotification = await Edirs.find({
+      "Members.Email": eDir,
+      "Members.Payment": "Not Payed",
+      CurrentPaymentDay: curentpayment,
+    });
     // console.log(paymentNotification);
     paymentNotification.forEach((PN) => {
-      console.log(PN.NameOfeDirr, now, PN.Amount)
-      User.updateOne({ email: eDir }, { $push: { Notification: [{ text: "Your monthly payment is due ", edirr: PN.NameOfeDirr, type: "mPayment", Date: now, Payment: PN.Amount }] } }, (err, doc) => {
-        if (err) return console.log(err);
-        console.log("NOtified");
-        var next;
-        paymentNotification.forEach((PN) => {
-          console.log(PN.PaymentDuration)
+      console.log(PN.NameOfeDirr, now, PN.Amount);
+      User.updateOne(
+        { email: eDir },
+        {
+          $push: {
+            Notification: [
+              {
+                text: "Your monthly payment is due ",
+                edirr: PN.NameOfeDirr,
+                type: "mPayment",
+                Date: now,
+                Payment: PN.Amount,
+              },
+            ],
+          },
+        },
+        (err, doc) => {
+          if (err) return console.log(err);
+          console.log("NOtified");
+          var next;
+          paymentNotification.forEach((PN) => {
+            console.log(PN.PaymentDuration);
 
-          if (PN.PaymentDuration == 30) {
-            var newpayment = (parseInt(PN.CurrentPaymentDay) + 30)
+            if (PN.PaymentDuration == 30) {
+              var newpayment = parseInt(PN.CurrentPaymentDay) + 30;
 
-            console.log(newpayment);
-            if (newpayment > 30) {
-              next = newpayment - 30
-              console.log(next)
+              console.log(newpayment);
+              if (newpayment > 30) {
+                next = newpayment - 30;
+                console.log(next);
+              } else {
+                next = newpayment;
+              }
+            } else if (PN.PaymentDuration == 7) {
+              console.log("we in 7");
+              var newpayment = parseInt(PN.CurrentPaymentDay) + 7;
 
+              console.log(newpayment);
+              if (newpayment > 30) {
+                next = newpayment - 30;
+                console.log(next);
+              } else {
+                next = newpayment;
+              }
+            } else if (PN.PaymentDuration == 14) {
+              var newpayment = parseInt(PN.CurrentPaymentDay) + 14;
+
+              console.log(newpayment);
+              if (newpayment > 30) {
+                next = newpayment - 30;
+                console.log(next);
+              } else {
+                next = newpayment;
+              }
+            } else if (PN.PaymentDuration == 21) {
+              var newpayment = parseInt(PN.CurrentPaymentDay) + 21;
+
+              console.log(newpayment);
+              if (newpayment > 30) {
+                next = newpayment - 30;
+                console.log(next);
+              } else {
+                next = newpayment;
+              }
             }
-            else {
-              next = newpayment;
-            }
-          }
-          else if (PN.PaymentDuration == 7) {
-            console.log("we in 7");
-            var newpayment = (parseInt(PN.CurrentPaymentDay) + 7)
-
-            console.log(newpayment);
-            if (newpayment > 30) {
-              next = newpayment - 30
-              console.log(next)
-
-            }
-            else {
-              next = newpayment;
-            }
-          } else if (PN.PaymentDuration == 14) {
-            var newpayment = (parseInt(PN.CurrentPaymentDay) + 14)
-
-            console.log(newpayment);
-            if (newpayment > 30) {
-              next = newpayment - 30
-              console.log(next)
-
-            }
-            else {
-              next = newpayment;
-            }
-          } else if (PN.PaymentDuration == 21) {
-            var newpayment = (parseInt(PN.CurrentPaymentDay) + 21)
-
-            console.log(newpayment);
-            if (newpayment > 30) {
-              next = newpayment - 30
-              console.log(next)
-
-            }
-            else {
-              next = newpayment;
-            }
-          }
-          console.log(next);
-          Edirs.updateOne({ NameOfeDirr: PN.NameOfeDirr }, { $set: { CurrentPaymentDay: next } }, (err, doc) => {
-            if (err) return console.log(err);
-            console.log("current payemnt updated ");
+            console.log(next);
+            Edirs.updateOne(
+              { NameOfeDirr: PN.NameOfeDirr },
+              { $set: { CurrentPaymentDay: next } },
+              (err, doc) => {
+                if (err) return console.log(err);
+                console.log("current payemnt updated ");
+              }
+            );
           });
-
-        })
-
-      });
-    })
-  })
-  // 
-}
+        }
+      );
+    });
+  });
+  //
+};
 exports.register = async (req, res) => {
   const { data } = req.body;
 
@@ -207,9 +241,7 @@ exports.register = async (req, res) => {
       console.log(error.message);
     }
   }
-
-
-}
+};
 exports.loginUser = async (req, res) => {
   try {
     const { data } = req.body;
@@ -233,8 +265,7 @@ exports.loginUser = async (req, res) => {
       const userName = user.userName;
       const email = user.email;
       const Gender = user.Gender;
-      const Department = user.Department
-    
+      const Department = user.Department;
 
       if (res.status(201)) {
         if (role === "user" || role === "Creator") {
@@ -266,12 +297,12 @@ exports.loginUser = async (req, res) => {
 exports.CreateEdir = async (req, res) => {
   const { data } = req.body;
   console.log(data);
-  var NameOfeDirr = data.edirrName
-  var Amount =data.amount
-  var PaymentDuration =data.paymentEvery
-  var PaymentDay =data.paymentDay
-  var Description =data.description
-  var Creator =data.Creator
+  var NameOfeDirr = data.edirrName;
+  var Amount = data.amount;
+  var PaymentDuration = data.paymentEvery;
+  var PaymentDay = data.paymentDay;
+  var Description = data.description;
+  var Creator = data.Creator;
 
   try {
     await Edirs.create({
@@ -307,7 +338,6 @@ exports.CreateEdir = async (req, res) => {
 
     console.log("eDirr created successfully");
     return res.json({ status: "ok" });
-
   } catch (error) {
     console.error(error);
     return res.json({ status: "error", error: error.message });
@@ -333,7 +363,18 @@ exports.Join = async (req, res) => {
 
     const updateUser = await User.updateOne(
       { userName: Creator },
-      { $push: { Notification: [{ text: userName + " wants to join your edirr", name: userName,type :"join", edirr: NameOfeDirr }] } }
+      {
+        $push: {
+          Notification: [
+            {
+              text: userName + " wants to join your edirr",
+              name: userName,
+              type: "join",
+              edirr: NameOfeDirr,
+            },
+          ],
+        },
+      }
     ).exec();
 
     if (!updateUser) {
@@ -342,13 +383,11 @@ exports.Join = async (req, res) => {
 
     console.log("Notified");
     res.json(updateEdirs);
-
   } catch (error) {
     console.error(error);
     res.json({ status: "error", error: error.message });
   }
 };
-
 
 exports.Accept1 = async (req, res) => {
   const { data } = req.body;
@@ -360,8 +399,6 @@ exports.Accept1 = async (req, res) => {
   console.log(Creator);
 
   try {
-
-
     await Edirs.updateOne(
       { NameOfeDirr: edirr },
       { $push: { Members: { userName: userName } } }
@@ -370,15 +407,17 @@ exports.Accept1 = async (req, res) => {
     const dataEdirr = await Edirs.findOne({ NameOfeDirr: edirr });
     const Amount = dataEdirr.Amount;
     const paymentsofar = parseInt(dataEdirr.PaymentSofar);
-    console.log(dataEdirr,"edirr");
+    console.log(dataEdirr, "edirr");
 
-    console.log(Amount,"amount");
+    console.log(Amount, "amount");
 
+    console.log(paymentsofar, "payment sofar");
 
-    console.log(paymentsofar,"payment sofar");
-
-    const datapayment = await User.findOne({ userName: userName }, 'Paymenthistory');
-    console.log(datapayment.Paymenthistory.length,"paymenthistory");
+    const datapayment = await User.findOne(
+      { userName: userName },
+      "Paymenthistory"
+    );
+    console.log(datapayment.Paymenthistory.length, "paymenthistory");
 
     if (paymentsofar === 0) {
       await User.updateOne(
@@ -389,22 +428,21 @@ exports.Accept1 = async (req, res) => {
               {
                 text: "You have joined the edir. Please pay your payment on the payment day.",
                 edirr: edirr,
-                Payment:Amount,
-                type: "normal"
-              }
-            ]
-          }
+                Payment: Amount,
+                type: "normal",
+              },
+            ],
+          },
         }
       );
-    
+
       await User.updateOne(
-        
         { userName: Creator },
         { $pull: { Notification: { _id: Notification_id } } }
       );
     } else {
       console.log("hello");
-      if (datapayment.Paymenthistory.length===0) {
+      if (datapayment.Paymenthistory.length === 0) {
         console.log("inside");
         const initalpayment = Amount * paymentsofar;
         await User.updateOne(
@@ -416,10 +454,10 @@ exports.Accept1 = async (req, res) => {
                   text: "You have joined. Please pay your initial payment to proceed.",
                   edirr: edirr,
                   type: "iPayment",
-                  Payment: initalpayment
-                }
-              ]
-            }
+                  Payment: initalpayment,
+                },
+              ],
+            },
           }
         );
 
@@ -437,12 +475,21 @@ exports.Accept1 = async (req, res) => {
   }
 };
 
-
 exports.payment = async (req, res) => {
   const date = new Date();
   const monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
   const currentMonthIndex = date.getMonth();
   const currentMonthName = monthNames[currentMonthIndex];
@@ -451,7 +498,6 @@ exports.payment = async (req, res) => {
   const { Amount, NameOfEdirr, userName } = data;
 
   try {
-
     await User.updateOne(
       { userName: userName },
       {
@@ -460,49 +506,66 @@ exports.payment = async (req, res) => {
             Amount: Amount,
             edirr: NameOfEdirr,
             Date: date,
-            Month: currentMonthName
-          }
-        }
+            Month: currentMonthName,
+          },
+        },
       }
     );
 
     const updatedEdirr = await Edirs.findOneAndUpdate(
-      { NameOfeDirr: NameOfEdirr, [`MonthlyPayment.${currentMonthName}`]: { $exists: true } },
-      { $push: { [`MonthlyPayment.${currentMonthName}`]: { userName, Amount, Date: date } } },
+      {
+        NameOfeDirr: NameOfEdirr,
+        [`MonthlyPayment.${currentMonthName}`]: { $exists: true },
+      },
+      {
+        $push: {
+          [`MonthlyPayment.${currentMonthName}`]: {
+            userName,
+            Amount,
+            Date: date,
+          },
+        },
+      },
       { new: true }
     );
 
     if (!updatedEdirr) {
-      return res.json({ status: 'error', error: 'Edirr or matching month not found' });
+      return res.json({
+        status: "error",
+        error: "Edirr or matching month not found",
+      });
     }
-    const data = await Edirs.findOne({ NameOfeDirr: NameOfEdirr }, 'TotalAmount');
+    const data = await Edirs.findOne(
+      { NameOfeDirr: NameOfEdirr },
+      "TotalAmount"
+    );
 
-                if (!data) {
-                  throw new Error("Edirr not found");
-                }
-                var amountn =  parseInt(Amount)
-                console.log(data.TotalAmount);
-                var TotalAmount = parseInt(data.TotalAmount);
-                var newAmount = TotalAmount + amountn;
-                console.log(data);
-                Edirs.updateMany({ NameOfeDirr: NameOfEdirr }, { $set: { TotalAmount: newAmount } }, (err, doc) => {
-                  if (err) return console.log(err);
-                  console.log(doc);
-                  // res.json(doc)
-                });
-                console.log("total Payment added ");
+    if (!data) {
+      throw new Error("Edirr not found");
+    }
+    var amountn = parseInt(Amount);
+    console.log(data.TotalAmount);
+    var TotalAmount = parseInt(data.TotalAmount);
+    var newAmount = TotalAmount + amountn;
+    console.log(data);
+    Edirs.updateMany(
+      { NameOfeDirr: NameOfEdirr },
+      { $set: { TotalAmount: newAmount } },
+      (err, doc) => {
+        if (err) return console.log(err);
+        console.log(doc);
+        // res.json(doc)
+      }
+    );
+    console.log("total Payment added ");
 
-
-          console.log('Payment recorded successfully');
-    return res.json({ status: 'ok' });
+    console.log("Payment recorded successfully");
+    return res.json({ status: "ok" });
   } catch (error) {
     console.error(error);
-    return res.json({ status: 'error', error: error.message });
+    return res.json({ status: "error", error: error.message });
   }
 };
-
-
-
 
 exports.LeaveEdirr = async (req, res) => {
   const { data } = req.body;
@@ -524,7 +587,6 @@ exports.LeaveEdirr = async (req, res) => {
 
     console.log("Member removed from Edirr");
     res.status(200).send({ status: "ok" });
-
   } catch (error) {
     console.error(error);
     res.status(500).send({ status: "error", error: error.message });
@@ -534,30 +596,28 @@ exports.Getuser = async (req, res) => {
   User.find((err, data) => {
     if (err) {
       res.status(500).send(err);
-    }
-    else {
+    } else {
       console.log(data.length);
       res.status(200).send(data);
-
-
     }
-  })
-
-}
+  });
+};
 exports.Getmemb = async (req, res) => {
   const { data } = req.body;
   var edirrName = data.edirrName;
   console.log(edirrName);
 
   try {
-    const data = await Edirs.findOne({ NameOfeDirr: edirrName }, 'Member').exec();
+    const data = await Edirs.findOne(
+      { NameOfeDirr: edirrName },
+      "Member"
+    ).exec();
 
     if (!data) {
       throw new Error("Edirr not found");
     }
 
     res.status(200).send(data);
-
   } catch (error) {
     console.error(error);
     res.status(500).send({ status: "error", error: error.message });
@@ -565,24 +625,22 @@ exports.Getmemb = async (req, res) => {
 };
 exports.Getedirrs = async (req, res) => {
   // try {
-    // const eDirr = await Edirs.findOne({});
-    Edirs.find((err , data) => {
-      if (err) {
-        res.send("there is no edir");
-      } else {
-        res.status(200).send(data)
-       
-      }
+  // const eDirr = await Edirs.findOne({});
+  Edirs.find((err, data) => {
+    if (err) {
+      res.send("there is no edir");
+    } else {
+      res.status(200).send(data);
+    }
+  });
 
-    });
-
-    // if (!eDirr) {
-    //   throw new Error("No eDirr found");
-    // }
-    // return res.json({
-    //   status: "ok",
-    //   eDirr
-    // }).sort({createdAt: -1});
+  // if (!eDirr) {
+  //   throw new Error("No eDirr found");
+  // }
+  // return res.json({
+  //   status: "ok",
+  //   eDirr
+  // }).sort({createdAt: -1});
   // } catch (error) {
   //   console.error(error);
   //   return res.json({
@@ -614,11 +672,14 @@ exports.checkmonthpayment = async (req, res) => {
   var edirrName = data.edirrName;
   var toDay = data.toDay;
 
-
   console.log("the name is  " + edirrName);
   console.log(toDay);
 
-  const users = await Edirs.findOne({ "NameOfeDirr": edirrName, "MonthlyPayment.Email": email, "MonthlyPayment.Date": toDay });
+  const users = await Edirs.findOne({
+    NameOfeDirr: edirrName,
+    "MonthlyPayment.Email": email,
+    "MonthlyPayment.Date": toDay,
+  });
 
   var check;
   console.log(users);
@@ -629,8 +690,7 @@ exports.checkmonthpayment = async (req, res) => {
   }
   console.log(check);
   return res.json({ check });
-
-}
+};
 exports.RequestService = async (req, res) => {
   const { data } = req.body;
   var userName = data.userName;
@@ -645,8 +705,13 @@ exports.RequestService = async (req, res) => {
       { NameOfeDirr: edirrName },
       {
         $push: {
-          Request: { userName: userName, Reason: Reason, Payment: "Not Paid", Edirr: edirrName }
-        }
+          Request: {
+            userName: userName,
+            Reason: Reason,
+            Payment: "Not Paid",
+            Edirr: edirrName,
+          },
+        },
       }
     ).exec();
 
@@ -663,11 +728,10 @@ exports.RequestService = async (req, res) => {
               text: userName + " wants to request your edirr for " + Reason,
               name: userName,
               edirr: edirrName,
-              type:"request"
-              
-            }
-          ]
-        }
+              type: "request",
+            },
+          ],
+        },
       }
     ).exec();
 
@@ -683,7 +747,6 @@ exports.RequestService = async (req, res) => {
   }
 };
 exports.AcceptService = async (req, res) => {
-
   const { data } = req.body;
   var userName = data.userName;
   var Reason = data.Reason;
@@ -693,7 +756,7 @@ exports.AcceptService = async (req, res) => {
   var Creator = data.Creator;
   try {
     Edirs.updateOne(
-      { "NameOfeDirr": Edirr, "Request.$[].userName": userName },
+      { NameOfeDirr: Edirr, "Request.$[].userName": userName },
       { $set: { "Request.$[].Payment": "Paid" } },
       (err, doc) => {
         if (err) {
@@ -701,30 +764,54 @@ exports.AcceptService = async (req, res) => {
         }
         User.updateOne(
           { userName: userName },
-          { $push: { Notification: [{ text: "Your request has been accepted for the reason " + Reason, Payment: Amount }] } },
+          {
+            $push: {
+              Notification: [
+                {
+                  text:
+                    "Your request has been accepted for the reason " + Reason,
+                  Payment: Amount,
+                },
+              ],
+            },
+          },
           async (err, doc) => {
             if (err) {
               throw new Error(err);
             }
 
-            
-
             console.log("Notified");
 
             await User.updateOne(
-        
               { userName: Creator },
               { $pull: { Notification: { _id: _id } } }
             );
 
             User.updateOne(
               { userName: userName },
-              { $push: { Granted: [{ text: "The edirr crator have funded you with this amount money" + Amount + "For the folowing reason  " + Reason, Amount: Amount, edirr: Edirr }] } },
+              {
+                $push: {
+                  Granted: [
+                    {
+                      text:
+                        "The edirr crator have funded you with this amount money" +
+                        Amount +
+                        "For the folowing reason  " +
+                        Reason,
+                      Amount: Amount,
+                      edirr: Edirr,
+                    },
+                  ],
+                },
+              },
               async (err, doc) => {
                 if (err) {
                   throw new Error(err);
                 }
-                const data = await Edirs.findOne({ NameOfeDirr: Edirr }, 'TotalAmount');
+                const data = await Edirs.findOne(
+                  { NameOfeDirr: Edirr },
+                  "TotalAmount"
+                );
 
                 if (!data) {
                   throw new Error("Edirr not found");
@@ -733,13 +820,16 @@ exports.AcceptService = async (req, res) => {
                 var TotalAmount = parseInt(data.TotalAmount);
                 var remaningAmount = TotalAmount - Amount;
                 console.log(data);
-                Edirs.updateMany({ NameOfeDirr: Edirr }, { $set: { TotalAmount: remaningAmount } }, (err, doc) => {
-                  if (err) return console.log(err);
-                  console.log(doc);
-                  // res.json(doc)
-                });
+                Edirs.updateMany(
+                  { NameOfeDirr: Edirr },
+                  { $set: { TotalAmount: remaningAmount } },
+                  (err, doc) => {
+                    if (err) return console.log(err);
+                    console.log(doc);
+                    // res.json(doc)
+                  }
+                );
                 console.log("Granted");
-
               }
             );
           }
@@ -759,7 +849,11 @@ exports.checkpayment = async (req, res) => {
 
   console.log("the name is  " + edirrName);
 
-  const users = await Edirs.findOne({ "NameOfeDirr": edirrName, "Members.userName": userName, "Members.Payment": "Not Payed" });
+  const users = await Edirs.findOne({
+    NameOfeDirr: edirrName,
+    "Members.userName": userName,
+    "Members.Payment": "Not Payed",
+  });
   // console.log(users);
   var check;
 
@@ -771,20 +865,37 @@ exports.checkpayment = async (req, res) => {
   }
   console.log(check);
   return res.json({ check });
-
-}
+};
 
 exports.rejectUser = async (req, res) => {
   const { data } = req.body;
   var Notification_id = data.id;
-  var userName = data.Creator;
+  var userName = data.userName;
   var NameOfEdirr = data.edirr;
-  // var 
+  var Creator = data.Creator;
+
+  // var
   console.log(id);
   console.log(userName);
 
   try {
-   const notif= await User.updateOne(
+    await User.updateOne(
+      { userName: userName },
+      {
+        $push: {
+          Notification: [
+            {
+              text: "Your request have been denied",
+              edirr: NameOfEdirr,
+              type: "normal",
+              name: Creator,
+            },
+          ],
+        },
+      }
+    );
+
+    const notif = await User.updateOne(
       { userName: Creator },
       { $pull: { Notification: { _id: Notification_id } } }
     );
@@ -805,7 +916,6 @@ exports.rejectUser = async (req, res) => {
 
     console.log("Member removed from Edirr");
     res.status(200).send({ status: "ok" });
-
   } catch (error) {
     console.error(error);
     res.status(500).send({ status: "error", error: error.message });
@@ -851,7 +961,7 @@ exports.UpdateAccount = async (req, res) => {
   const { data } = req.body;
   console.log(data);
   var _id = data.data._id;
- 
+
   var fullName = data.data.FullName;
   var userName = data.data.userName;
   var email = data.data.email;
@@ -859,11 +969,7 @@ exports.UpdateAccount = async (req, res) => {
 
   var department = data.data.department;
 
-  console.log("update", 
-  fullName,
-    email,
-    phoneNumber,
-    department);
+  console.log("update", fullName, email, phoneNumber, department);
 
   User.findOneAndUpdate(
     { _id: _id },
@@ -872,8 +978,8 @@ exports.UpdateAccount = async (req, res) => {
         fullName: fullName,
         email: email,
         phoneNumber: phoneNumber,
-        department: department
-      }
+        department: department,
+      },
     },
     { new: true },
     (err, doc) => {
@@ -881,7 +987,6 @@ exports.UpdateAccount = async (req, res) => {
       return res.json({ doc });
     }
   );
-
 };
 
 exports.Alert = async (req, res) => {
@@ -889,13 +994,12 @@ exports.Alert = async (req, res) => {
     const { data } = req.body;
     // console.log(data);
     const { userName, NameOfeDirr } = data;
-  const Edir = await Edirs.findById({ _id: NameOfeDirr });
-  var NameOfEdirr = Edir.NameOfeDirr;
-  var amount = Edir.Amount;
-console.log(Edir);
-  console.log("the name ",NameOfEdirr);
-    console.log("the amount ",amount);
-
+    const Edir = await Edirs.findById({ _id: NameOfeDirr });
+    var NameOfEdirr = Edir.NameOfeDirr;
+    var amount = Edir.Amount;
+    console.log(Edir);
+    console.log("the name ", NameOfEdirr);
+    console.log("the amount ", amount);
 
     await User.updateOne(
       { userName: userName },
@@ -907,10 +1011,10 @@ console.log(Edir);
               edirr: NameOfEdirr,
               type: "mPayment",
               // Date: formattedDate,
-              Payment: amount
-            }
-          ]
-        }
+              Payment: amount,
+            },
+          ],
+        },
       }
     );
 
@@ -926,16 +1030,9 @@ exports.RejectService = async (req, res) => {
   try {
     const { data } = req.body;
     // console.log(data);
-    const { userName, NameOfeDirr,Creator,Notification_id } = data;
+    const { userName, NameOfeDirr, Creator, Notification_id } = data;
 
-  const Edir = await Edirs.findById({ _id: NameOfeDirr });
-  var NameOfEdirr = Edir.NameOfeDirr;
-  var amount = Edir.Amount;
-console.log(Edir);
-  console.log("the name ",NameOfEdirr);
-    console.log("the amount ",amount);
-
-
+  
     await User.updateOne(
       { userName: userName },
       {
@@ -943,19 +1040,18 @@ console.log(Edir);
           Notification: [
             {
               text: "Your Service request have been denied",
-              edirr: NameOfEdirr,
+              edirr: NameOfeDirr,
               type: "normal",
-              name:Creator,
-            }
-          ]
-        }
+              name: Creator,
+            },
+          ],
+        },
       }
     );
 
     console.log("Notified");
 
     await User.updateOne(
-        
       { userName: Creator },
       { $pull: { Notification: { _id: Notification_id } } }
     );
