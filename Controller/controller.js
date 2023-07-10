@@ -875,7 +875,15 @@ exports.UpdateAccount = async (req, res) => {
 exports.Alert = async (req, res) => {
   try {
     const { data } = req.body;
-    const { userName, amount, NameOfeDirr } = data;
+    // console.log(data);
+    const { userName, NameOfeDirr } = data;
+  const Edir = await Edirs.findById({ _id: NameOfeDirr });
+  var NameOfEdirr = Edir.NameOfeDirr;
+  var amount = Edir.Amount;
+console.log(Edir);
+  console.log("the name ",NameOfEdirr);
+    console.log("the amount ",amount);
+
 
     await User.updateOne(
       { userName: userName },
@@ -884,9 +892,9 @@ exports.Alert = async (req, res) => {
           Notification: [
             {
               text: "Your monthly payment is due",
-              edirr: NameOfeDirr,
+              edirr: NameOfEdirr,
               type: "mPayment",
-              Date: formattedDate,
+              // Date: formattedDate,
               Payment: amount
             }
           ]
