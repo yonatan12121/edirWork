@@ -869,9 +869,9 @@ exports.checkpayment = async (req, res) => {
 
 exports.rejectUser = async (req, res) => {
   const { data } = req.body;
-  var Notification_id = data.id;
+  var Notification_id = data.Notification_id;
   var userName = data.userName;
-  var NameOfEdirr = data.edirr;
+  var NameOfEdirr = data.NameOfEdirr;
   var Creator = data.Creator;
 
   // var
