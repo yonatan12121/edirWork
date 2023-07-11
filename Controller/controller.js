@@ -930,7 +930,7 @@ exports.removeUseredirr = async (req, res) => {
     }
        console.log("memeber removed");
     // Find the user by ID and remove them
-  
+  res.status(200).send(removemembers);
   } catch (error) {
     console.error("Error removing user:", error);
     res.status(500).send(error);
