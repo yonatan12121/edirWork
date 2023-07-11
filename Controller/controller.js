@@ -943,13 +943,13 @@ exports.UpdateAccount = async (req, res) => {
   console.log(data);
   var _id = data.id;
 
-  var fullName = data.FullName;
+  var fullName = data.fullName;
   var email = data.email;
   var phoneNumber = data.phoneNumber;
 
-  var department = data.department;
+  var Department = data.department;
 
-  console.log("update", fullName, email, phoneNumber, department);
+  console.log("update", fullName, email, phoneNumber, Department);
 
   User.findOneAndUpdate(
     { _id: _id },
@@ -958,7 +958,7 @@ exports.UpdateAccount = async (req, res) => {
         fullName: fullName,
         email: email,
         phoneNumber: phoneNumber,
-        department: department,
+        Department: Department,
       },
     },
     { new: true },
