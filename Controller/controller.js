@@ -66,7 +66,7 @@ exports.test = async () => {
             { $set: { PaymentSofar: paymentsofar } },
             (err, doc) => {
               if (err) return console.log(err);
-              res.json(doc);
+              return doc;
             }
           );
         }
@@ -882,6 +882,8 @@ exports.rejectUser = async (req, res) => {
   var userName = data.userName;
   var NameOfEdirr = data.NameOfEdirr;
   var Creator = data.Creator;
+  console.log(data);
+
 
   // var
   // console.log(id);
@@ -950,6 +952,25 @@ exports.removeUser = async (req, res) => {
     res.status(500).send(error);
   }
 };
+exports.removeEdirr = async (req, res) => {
+  const { data } = req.body;
+  var id = data._id;
+  console.log(data);
+  try {
+    // Find the user by ID and remove them
+    const result = await Edirs.findByIdAndRemove(id);
+
+    if (result) {
+      console.log("Edir removed successfully:", result);
+      res.status(200).send(result);
+    } else {
+      console.log("Edir not found");
+    }
+  } catch (error) {
+    console.error("Error removing Edir:", error);
+    res.status(500).send(error);
+  }
+};
 
 exports.ResetPassword = async (req, res) => {
   const { newPassword, userName } = req.body;
@@ -969,14 +990,13 @@ exports.ResetPassword = async (req, res) => {
 exports.UpdateAccount = async (req, res) => {
   const { data } = req.body;
   console.log(data);
-  var _id = data.data._id;
+  var _id = data._id;
 
-  var fullName = data.data.FullName;
-  var userName = data.data.userName;
-  var email = data.data.email;
-  var phoneNumber = data.data.phoneNumber;
+  var fullName = data.FullName;
+  var email = data.email;
+  var phoneNumber = data.phoneNumber;
 
-  var department = data.data.department;
+  var department = data.department;
 
   console.log("update", fullName, email, phoneNumber, department);
 
