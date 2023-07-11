@@ -930,14 +930,7 @@ exports.removeUseredirr = async (req, res) => {
     }
        console.log("memeber removed");
     // Find the user by ID and remove them
-    const result = await User.findByIdAndRemove(id);
-
-    if (result) {
-      console.log("User removed successfully:", result);
-      res.status(200).send(result);
-    } else {
-      console.log("User not found");
-    }
+  
   } catch (error) {
     console.error("Error removing user:", error);
     res.status(500).send(error);
