@@ -537,7 +537,7 @@ exports.LeaveEdirr = async (req, res) => {
   try {
     const updatedEdirs = await Edirs.findOneAndUpdate(
       { _id: id },
-      { $pull: { Member: { userName: userName } } },
+      { $pull: { Members: { userName: userName } } },
       { new: true }
     ).exec();
 
