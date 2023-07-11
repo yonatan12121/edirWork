@@ -31,10 +31,14 @@ route.post("/Join", controller.Join);
 route.post("/RequestService", controller.RequestService);
 route.post("/LeaveEdirr", controller.LeaveEdirr);
 route.post("/payment", controller.payment);
+route.post("/UpdateAccount", controller.UpdateAccount);
+
 
 //admin
 route.post("/checkmonthpayment", controller.checkmonthpayment);
 route.get("/Getuser", controller.Getuser);
 route.get("/removeUser", controller.removeUser);
+route.get("/removeEdirr", controller.removeEdirr);
+
 
 module.exports = route;
