@@ -917,7 +917,7 @@ exports.removeUseredirr = async (req, res) => {
       { NameOfeDirr: NameOfEdirr },
       { $pull: { Members: { userName: userName } } }
     );
-    if (!notif) {
+    if (!removemembers) {
       throw new Error("members not found");
     }
 
@@ -925,7 +925,7 @@ exports.removeUseredirr = async (req, res) => {
       { NameOfeDirr: NameOfEdirr },
       { $pull: { Member: { userName: userName } } }
     );
-    if (!notif) {
+    if (!removemember) {
       throw new Error("member not found");
     }
        console.log("memeber removed");
