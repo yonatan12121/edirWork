@@ -24,6 +24,8 @@ route.post("/Getmemb", controller.Getmemb);
 route.post("/rejectUser", controller.rejectUser);
 route.post("/Alert", controller.Alert);
 route.post("/RejectService", controller.RejectService);
+route.post("/removeUseredirr", controller.removeUseredirr);
+
 
 //user
 route.post("/profile", controller.profile);

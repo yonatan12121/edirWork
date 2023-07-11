@@ -903,6 +903,46 @@ exports.removeUser = async (req, res) => {
     res.status(500).send(error);
   }
 };
+
+
+exports.removeUseredirr = async (req, res) => {
+
+  const { data } = req.body;
+  var NameOfEdirr = data.NameOfeDirr;
+  var userName = data.userName;
+
+  console.log(data);
+  try {
+    const removemembers = await Edirs.updateOne(
+      { NameOfeDirr: NameOfEdirr },
+      { $pull: { Members: { userName: userName } } }
+    );
+    if (!notif) {
+      throw new Error("members not found");
+    }
+
+    const removemember = await Edirs.updateOne(
+      { NameOfeDirr: NameOfEdirr },
+      { $pull: { Member: { userName: userName } } }
+    );
+    if (!notif) {
+      throw new Error("member not found");
+    }
+       console.log("memeber removed");
+    // Find the user by ID and remove them
+    const result = await User.findByIdAndRemove(id);
+
+    if (result) {
+      console.log("User removed successfully:", result);
+      res.status(200).send(result);
+    } else {
+      console.log("User not found");
+    }
+  } catch (error) {
+    console.error("Error removing user:", error);
+    res.status(500).send(error);
+  }
+};
 exports.removeEdirr = async (req, res) => {
   const { data } = req.body;
   var id = data._id;
