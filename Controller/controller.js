@@ -14,177 +14,128 @@ const { Job } = require("node-schedule");
 const JWT_SECRET =
   "nhjndshnbhsiduy78q3ye3yhrewhriewopfew[fpe-fpe-pf[df[s;f[ds;f[ds;f[ds;f[ds;,fld,s.mdnshbgvcarfdtwygyqgygdhsabjbcnvgawqrr6t8siahjdvdgvds()!@#$%^&*";
 
-exports.test = async () => {
-  //7/2/2023
-  const date = new Date(); // Create a new Date object with the current date and time
+// exports.test = async () => {
+//   //7/2/2023
+//   const date = new Date(); // Create a new Date object with the current date and time
 
-  const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Convert to string and pad with 0 if needed
-  const day = date.getDate().toString().padStart(2, "0"); // Convert to string and pad with 0 if needed
-  const year = date.getFullYear();
-  const formattedDate = `${year}-${month}-${day}`;
-  console.log(formattedDate);
-  var paymentsofar = 0;
-  const Edir = await Edirs.find({ PaymentDay: formattedDate });
-  console.log(Edir, "the edirr are");
-  var Store = [];
-  Edir.forEach((eDir) => {
-    eDir.Members.forEach((members) => {
-      Store = Store.concat(members.userName);
-    });
-  });
-  // console.log(Store);
+//   const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Convert to string and pad with 0 if needed
+//   const day = date.getDate().toString().padStart(2, "0"); // Convert to string and pad with 0 if needed
+//   const year = date.getFullYear();
+//   const formattedDate = `${year}-${month}-${day}`;
+//   console.log(formattedDate);
+//   var paymentsofar = 0;
+//   const Edir = await Edirs.find({ PaymentDay: formattedDate });
+//   console.log(Edir, "the edirr are");
+//   var Store = [];
+//   Edir.forEach((eDir) => {
+//     eDir.Members.forEach((members) => {
+//       Store = Store.concat(members.userName);
+//     });
+//   });
+//   // console.log(Store);
 
-  Store.forEach(async (userName) => {
-    const paymentNotification = await Edirs.find({
-      "Members.userName": userName,
-      PaymentDay: formattedDate,
-    });
-    // console.log(paymentNotification);
-    paymentNotification.forEach((PN) => {
-      console.log(PN.NameOfeDirr, PN.Amount);
-      User.updateOne(
-        { userName: userName },
-        {
-          $push: {
-            Notification: [
-              {
-                text: "Your monthly payment is due ",
-                edirr: PN.NameOfeDirr,
-                type: "mPayment",
-                Date: formattedDate,
-                Payment: PN.Amount,
-              },
-            ],
-          },
-        },
-        (err, doc) => {
-          if (err) return console.log(err);
-          console.log("NOtified");
-          paymentsofar++;
-          Edirs.updateMany(
-            { NameOfeDirr: PN.NameOfeDirr },
-            { $set: { PaymentSofar: paymentsofar } },
-            (err, doc) => {
-              if (err) return console.log(err);
-              return doc;
-            }
-          );
-        }
-      );
-    });
-  });
-  //
-};
+//   Store.forEach(async (userName) => {
+//     const paymentNotification = await Edirs.find({
+//       "Members.userName": userName,
+//       PaymentDay: formattedDate,
+//     });
+//     // console.log(paymentNotification);
+//     paymentNotification.forEach((PN) => {
+//       console.log(PN.NameOfeDirr, PN.Amount);
+//       User.updateOne(
+//         { userName: userName },
+//         {
+//           $push: {
+//             Notification: [
+//               {
+//                 text: "Your monthly payment is due ",
+//                 edirr: PN.NameOfeDirr,
+//                 type: "mPayment",
+//                 Date: formattedDate,
+//                 Payment: PN.Amount,
+//               },
+//             ],
+//           },
+//         },
+//         (err, doc) => {
+//           if (err) return console.log(err);
+//           console.log("NOtified");
+//           paymentsofar++;
+//           Edirs.updateMany(
+//             { NameOfeDirr: PN.NameOfeDirr },
+//             { $set: { PaymentSofar: paymentsofar } },
+//             (err, doc) => {
+//               if (err) return console.log(err);
+//               return doc;
+//             }
+//           );
+//         }
+//       );
+//     });
+//   });
+//   //
+// };
 
 exports.runOnceADay = async () => {
-  var i;
-  const PaymentDay = "11";
-  // Your code here
-  const now = new Date();
-  const aa = String(now);
-  var bb = aa.split(" ", 4);
-  const curentpayment = bb[2];
-  console.log(curentpayment);
-  const Edir = await Edirs.find({ CurrentPaymentDay: curentpayment });
-  // const users= await User.find();
-  // console.log(users);
-  // console.log(Edir[0].Members[0].Email)
-  var Store = [];
-  Edir.forEach((eDir) => {
-    eDir.Members.forEach((members) => {
-      Store = Store.concat(members.Email);
-    });
-  });
-  // console.log(Store);
+ //7/2/2023
+ const date = new Date(); // Create a new Date object with the current date and time
 
-  Store.forEach(async (eDir) => {
-    const paymentNotification = await Edirs.find({
-      "Members.Email": eDir,
-      "Members.Payment": "Not Payed",
-      CurrentPaymentDay: curentpayment,
-    });
-    // console.log(paymentNotification);
-    paymentNotification.forEach((PN) => {
-      console.log(PN.NameOfeDirr, now, PN.Amount);
-      User.updateOne(
-        { email: eDir },
-        {
-          $push: {
-            Notification: [
-              {
-                text: "Your monthly payment is due ",
-                edirr: PN.NameOfeDirr,
-                type: "mPayment",
-                Date: now,
-                Payment: PN.Amount,
-              },
-            ],
-          },
-        },
-        (err, doc) => {
-          if (err) return console.log(err);
-          console.log("NOtified");
-          var next;
-          paymentNotification.forEach((PN) => {
-            console.log(PN.PaymentDuration);
+ const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Convert to string and pad with 0 if needed
+ const day = date.getDate().toString().padStart(2, "0"); // Convert to string and pad with 0 if needed
+ const year = date.getFullYear();
+ const formattedDate = `${year}-${month}-${day}`;
+ console.log(formattedDate);
+ var paymentsofar = 0;
+ const Edir = await Edirs.find({ PaymentDay: formattedDate });
+ console.log(Edir, "the edirr are");
+ var Store = [];
+ Edir.forEach((eDir) => {
+   eDir.Members.forEach((members) => {
+     Store = Store.concat(members.userName);
+   });
+ });
+ // console.log(Store);
 
-            if (PN.PaymentDuration == 30) {
-              var newpayment = parseInt(PN.CurrentPaymentDay) + 30;
-
-              console.log(newpayment);
-              if (newpayment > 30) {
-                next = newpayment - 30;
-                console.log(next);
-              } else {
-                next = newpayment;
-              }
-            } else if (PN.PaymentDuration == 7) {
-              console.log("we in 7");
-              var newpayment = parseInt(PN.CurrentPaymentDay) + 7;
-
-              console.log(newpayment);
-              if (newpayment > 30) {
-                next = newpayment - 30;
-                console.log(next);
-              } else {
-                next = newpayment;
-              }
-            } else if (PN.PaymentDuration == 14) {
-              var newpayment = parseInt(PN.CurrentPaymentDay) + 14;
-
-              console.log(newpayment);
-              if (newpayment > 30) {
-                next = newpayment - 30;
-                console.log(next);
-              } else {
-                next = newpayment;
-              }
-            } else if (PN.PaymentDuration == 21) {
-              var newpayment = parseInt(PN.CurrentPaymentDay) + 21;
-
-              console.log(newpayment);
-              if (newpayment > 30) {
-                next = newpayment - 30;
-                console.log(next);
-              } else {
-                next = newpayment;
-              }
-            }
-            console.log(next);
-            Edirs.updateOne(
-              { NameOfeDirr: PN.NameOfeDirr },
-              { $set: { CurrentPaymentDay: next } },
-              (err, doc) => {
-                if (err) return console.log(err);
-                console.log("current payemnt updated ");
-              }
-            );
-          });
-        }
-      );
-    });
-  });
-  //
+ Store.forEach(async (userName) => {
+   const paymentNotification = await Edirs.find({
+     "Members.userName": userName,
+     PaymentDay: formattedDate,
+   });
+   // console.log(paymentNotification);
+   paymentNotification.forEach((PN) => {
+     console.log(PN.NameOfeDirr, PN.Amount);
+     User.updateOne(
+       { userName: userName },
+       {
+         $push: {
+           Notification: [
+             {
+               text: "Your monthly payment is due ",
+               edirr: PN.NameOfeDirr,
+               type: "mPayment",
+               Date: formattedDate,
+               Payment: PN.Amount,
+             },
+           ],
+         },
+       },
+       (err, doc) => {
+         if (err) return console.log(err);
+         console.log("NOtified");
+         paymentsofar++;
+         Edirs.updateMany(
+           { NameOfeDirr: PN.NameOfeDirr },
+           { $set: { PaymentSofar: paymentsofar } },
+           (err, doc) => {
+             if (err) return console.log(err);
+             return doc;
+           }
+         );
+       }
+     );
+   });
+ });
+ //
 };
 exports.register = async (req, res) => {
   const { data } = req.body;
@@ -990,7 +941,7 @@ exports.ResetPassword = async (req, res) => {
 exports.UpdateAccount = async (req, res) => {
   const { data } = req.body;
   console.log(data);
-  var _id = data._id;
+  var _id = data.id;
 
   var fullName = data.FullName;
   var email = data.email;

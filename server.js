@@ -13,10 +13,7 @@ const schedule = require('node-schedule');
 const { runOnceADay,test } = require('./Controller/controller');
   //  test();
 
-  schedule.scheduleJob ('41 14 * * *'   ,runOnceADay
-
-
-);
+  schedule.scheduleJob('0 9 * * *', runOnceADay);
 // test();
 // schedule.scheduleJob('0 0 * * *', runOnceADay());
 dotenv.config({ path: ".env" });
