@@ -34,8 +34,8 @@ const UserDetailsScehma = new mongoose.Schema(
   {
     userName: { type: String, unique: true },
     fullName: String,
-    phoneNumber: { type: String, unique: true },
-    email: { type: String, unique: true },
+    phoneNumber:String,
+    email:String,
     password: String,
     Gender: String,
     Department: String,
