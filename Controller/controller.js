@@ -957,12 +957,14 @@ exports.removeEdirr = async (req, res) => {
 };
 
 exports.ResetPassword = async (req, res) => {
-  const { newPassword, userName } = req.body;
-  console.log(newPassword, email);
+  const { data } = req.body;
+
+  const { password, id } = data;
+  console.log(password, id);
   // Edirs.updateOne({ "NameOfeDirr": edirrName }, { $set: { "Members.$[].Payment": "Payed" } }, (err, doc) => {
-  const encreptedPassword = await bcrypt.hash(newPassword, 10);
+  const encreptedPassword = await bcrypt.hash(password, 10);
   User.updateOne(
-    { userName: userName },
+    { _id: id },
     { $set: { password: encreptedPassword } },
     (err, doc) => {
       if (err) return console.log(err);
